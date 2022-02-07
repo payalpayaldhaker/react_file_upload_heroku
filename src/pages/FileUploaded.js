@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 //import swal from 'sweetalert';
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -15,6 +15,23 @@ export default function FileUploaded() {
         precent:0,
         loading:false
     })
+
+    const [jwt, setJwt] =useState({ 
+        token:''
+    });
+
+    useEffect(()=>{  
+       // alert('okok');
+        
+        let user =    JSON.parse(localStorage.getItem('user'))
+
+        setJwt({ 
+            ...jwt,
+            token:user.jwt
+
+        })
+    },[])
+    
 
 
     //2. Function
@@ -43,6 +60,12 @@ export default function FileUploaded() {
                 let upload_response =   await axios({
                     method: 'POST',
                     url:`${ config.dev_url }/api/upload`,
+                    headers: { 
+                        'content-type': 'application/json' ,
+                        "Authorization":`Bearer ${jwt.token}`
+                    },
+
+
                     data,
                     onUploadProgress:(progress) =>{
                         console.log(progress);
